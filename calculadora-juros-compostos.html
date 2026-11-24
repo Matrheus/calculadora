@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de Juros Compostos Online e Grátis</title>
+<meta name="description" content="Simule o crescimento do seu dinheiro com a calculadora de juros compostos: informe valor inicial, aportes mensais, taxa e prazo e veja o resultado com gráfico e tabela.">
+<link rel="canonical" href="https://SEU-DOMINIO.com.br/calculadora-juros-compostos">
+<meta property="og:title" content="Calculadora de Juros Compostos Online e Grátis">
+<meta property="og:description" content="Simule investimentos com aportes mensais, veja gráfico e tabela mês a mês.">
+<meta property="og:type" content="website">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Calculadora de Juros Compostos",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" },
+  "inLanguage": "pt-BR"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "O que são juros compostos?",
+      "acceptedAnswer": { "@type": "Answer", "text": "São juros calculados sobre o capital inicial mais os juros acumulados de períodos anteriores. Por isso o dinheiro cresce de forma exponencial, e não linear." }
+    },
+    {
+      "@type": "Question",
+      "name": "Qual é a fórmula dos juros compostos?",
+      "acceptedAnswer": { "@type": "Answer", "text": "M = C × (1 + i)^n, onde M é o montante, C o capital inicial, i a taxa por período e n o número de períodos. Com aportes mensais, soma-se ao resultado o valor futuro das parcelas." }
+    },
+    {
+      "@type": "Question",
+      "name": "Os resultados da calculadora consideram imposto de renda e inflação?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Não. O cálculo é bruto. Imposto de renda, taxas de administração e inflação reduzem o ganho real e devem ser considerados separadamente." }
+    }
+  ]
+}
+</script>
+
+<style>
+  :root{
+    --bg:#f5f7fb; --card:#ffffff; --text:#1c2333; --muted:#5d6783;
+    --line:#e2e7f1; --brand:#0f9d6b; --brand-dark:#0b7d54; --accent:#3b6ef5;
+    --invested:#3b6ef5; --interest:#0f9d6b; --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1420; --card:#171e2e; --text:#e8ecf5; --muted:#9aa5c0;
+      --line:#2a3550; --brand:#22c58b; --brand-dark:#1aa774; --accent:#6d93ff;
+      --invested:#6d93ff; --interest:#22c58b;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header.site{background:var(--card);border-bottom:1px solid var(--line)}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+  header.site .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .logo{font-weight:800;font-size:1.15rem;color:var(--brand);text-decoration:none}
+  nav a{margin-left:18px;color:var(--muted);text-decoration:none;font-size:.95rem}
+  nav a:hover{color:var(--text)}
+  h1{font-size:clamp(1.6rem,4vw,2.2rem);line-height:1.2;margin:32px 0 8px}
+  .lead{color:var(--muted);margin:0 0 24px;max-width:680px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media (max-width:760px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  label{display:block;font-size:.88rem;font-weight:600;margin-bottom:6px}
+  .field{margin-bottom:16px}
+  .row{display:flex;gap:10px}
+  .row > *{flex:1}
+  input,select{width:100%;padding:11px 12px;font-size:1rem;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit}
+  input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+  .prefix{position:relative}
+  .prefix span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.95rem}
+  .prefix input{padding-left:38px}
+  button{width:100%;padding:13px;font-size:1rem;font-weight:700;border:0;border-radius:10px;background:var(--brand);color:#fff;cursor:pointer;transition:background .15s}
+  button:hover{background:var(--brand-dark)}
+  button.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);margin-top:10px;font-weight:600}
+  button.ghost:hover{background:var(--bg)}
+  .error{color:#d93a3a;font-size:.9rem;margin:0 0 12px;min-height:1.2em}
+  .results{display:grid;gap:12px}
+  .metric{padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+  .metric small{display:block;color:var(--muted);font-size:.82rem}
+  .metric strong{font-size:1.35rem}
+  .metric.main{background:var(--brand);border-color:var(--brand)}
+  .metric.main small,.metric.main strong{color:#fff}
+  .metric.main strong{font-size:1.8rem}
+  .legend{display:flex;gap:16px;font-size:.85rem;color:var(--muted);margin:16px 0 8px;flex-wrap:wrap}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  canvas{width:100%;height:260px;display:block}
+  .table-wrap{overflow-x:auto;margin-top:12px;max-height:380px;overflow-y:auto;border:1px solid var(--line);border-radius:10px}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:520px}
+  th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{position:sticky;top:0;background:var(--card);font-size:.8rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+  section.content{margin:40px 0}
+  section.content h2{font-size:1.4rem;margin:0 0 10px}
+  section.content h3{font-size:1.1rem;margin:22px 0 6px}
+  section.content p,section.content li{color:var(--muted)}
+  code.formula{display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0;color:var(--text);font-size:1.05rem;overflow-x:auto}
+  details{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:10px}
+  summary{cursor:pointer;font-weight:600}
+  details p{margin:10px 0 0}
+  footer{border-top:1px solid var(--line);margin-top:48px;padding:24px 0;color:var(--muted);font-size:.85rem;text-align:center}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/">Calcula<span style="color:var(--accent)">Fácil</span></a>
+    <nav>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#faq">Dúvidas</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Calculadora de Juros Compostos</h1>
+  <p class="lead">Descubra quanto seu dinheiro pode render com o tempo. Informe o valor inicial, os aportes mensais, a taxa de juros e o prazo.</p>
+
+  <div class="grid">
+    <!-- FORMULÁRIO -->
+    <form class="card" id="form" novalidate>
+      <div class="field">
+        <label for="inicial">Valor inicial</label>
+        <div class="prefix"><span>R$</span><input id="inicial" type="number" inputmode="decimal" min="0" step="0.01" value="1000"></div>
+      </div>
+
+      <div class="field">
+        <label for="aporte">Aporte mensal</label>
+        <div class="prefix"><span>R$</span><input id="aporte" type="number" inputmode="decimal" min="0" step="0.01" value="300"></div>
+      </div>
+
+      <div class="field">
+        <label for="taxa">Taxa de juros</label>
+        <div class="row">
+          <input id="taxa" type="number" inputmode="decimal" min="0" step="0.01" value="10">
+          <select id="tipoTaxa" aria-label="Período da taxa">
+            <option value="anual" selected>% ao ano</option>
+            <option value="mensal">% ao mês</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="periodo">Período</label>
+        <div class="row">
+          <input id="periodo" type="number" inputmode="numeric" min="1" step="1" value="10">
+          <select id="tipoPeriodo" aria-label="Unidade do período">
+            <option value="anos" selected>anos</option>
+            <option value="meses">meses</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="error" id="erro" role="alert"></p>
+      <button type="submit">Calcular</button>
+      <button type="button" class="ghost" id="limpar">Limpar</button>
+    </form>
+
+    <!-- RESULTADOS -->
+    <div class="card" id="painel">
+      <div class="results">
+        <div class="metric main"><small>Valor total final</small><strong id="rTotal">R$ 0,00</strong></div>
+        <div class="metric"><small>Total investido</small><strong id="rInvestido">R$ 0,00</strong></div>
+        <div class="metric"><small>Total em juros</small><strong id="rJuros">R$ 0,00</strong></div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--invested)"></i>Valor investido</span>
+        <span><i style="background:var(--interest)"></i>Juros acumulados</span>
+      </div>
+      <canvas id="grafico" aria-label="Gráfico da evolução do investimento" role="img"></canvas>
+    </div>
+  </div>
+
+  <!-- TABELA -->
+  <div class="card" style="margin-top:20px">
+    <h2 style="margin:0 0 4px;font-size:1.15rem">Evolução do investimento</h2>
+    <small style="color:var(--muted)" id="tabelaInfo"></small>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th id="thPeriodo">Período</th><th>Investido</th><th>Juros no período</th><th>Juros acumulados</th><th>Total</th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO SEO -->
+  <section class="content" id="como-funciona">
+    <h2>Como funciona o cálculo de juros compostos</h2>
+    <p>Nos juros compostos, os rendimentos de cada período são somados ao capital e passam a render juros também. É o famoso "juros sobre juros", e quanto maior o prazo, maior o efeito.</p>
+    <code class="formula">M = C × (1 + i)<sup>n</sup></code>
+    <ul>
+      <li><strong>M</strong>: montante final</li>
+      <li><strong>C</strong>: capital inicial</li>
+      <li><strong>i</strong>: taxa de juros por período</li>
+      <li><strong>n</strong>: número de períodos</li>
+    </ul>
+    <h3>Como tratamos taxa anual e aportes</h3>
+    <p>Quando você informa uma taxa anual, ela é convertida para a taxa mensal equivalente: <em>(1 + taxa anual)<sup>1/12</sup> − 1</em>. Os aportes mensais são considerados no final de cada mês, depois da aplicação dos juros do mês.</p>
+    <p><strong>Aviso:</strong> a simulação é bruta. Não considera imposto de renda, IOF, taxas de administração nem inflação, e não é recomendação de investimento.</p>
+  </section>
+
+  <section class="content" id="faq">
+    <h2>Perguntas frequentes</h2>
+    <details>
+      <summary>O que são juros compostos?</summary>
+      <p>São juros calculados sobre o capital inicial mais os juros acumulados de períodos anteriores. Por isso o dinheiro cresce de forma exponencial, e não linear.</p>
+    </details>
+    <details>
+      <summary>Qual a diferença entre juros simples e compostos?</summary>
+      <p>Nos juros simples, a taxa incide sempre sobre o valor inicial. Nos compostos, incide sobre o saldo atualizado, o que gera um crescimento cada vez mais acelerado.</p>
+    </details>
+    <details>
+      <summary>Os resultados consideram imposto de renda e inflação?</summary>
+      <p>Não. O cálculo é bruto. Imposto, taxas e inflação reduzem o ganho real e devem ser considerados separadamente.</p>
+    </details>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    © <span id="ano"></span> CalculaFácil. Ferramenta apenas informativa, sem caráter de recomendação financeira.
+  </div>
+</footer>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const brl = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+  let ultimaSerie = [];
+
+  $('ano').textContent = new Date().getFullYear();
+
+  function simular(inicial, aporte, taxa, tipoTaxa, periodo, tipoPeriodo){
+    const meses = tipoPeriodo === 'anos' ? periodo * 12 : periodo;
+    const i = tipoTaxa === 'anual' ? Math.pow(1 + taxa/100, 1/12) - 1 : taxa/100;
+
+    let saldo = inicial, investido = inicial;
+    const linhas = [{mes:0, investido, saldo, jurosMes:0}];
+
+    for(let m = 1; m <= meses; m++){
+      const jurosMes = saldo * i;
+      saldo = saldo + jurosMes + aporte;
+      investido += aporte;
+      linhas.push({mes:m, investido, saldo, jurosMes});
+    }
+    return {meses, linhas};
+  }
+
+  function validar(){
+    const inicial = parseFloat($('inicial').value) || 0;
+    const aporte  = parseFloat($('aporte').value)  || 0;
+    const taxa    = parseFloat($('taxa').value);
+    const periodo = parseInt($('periodo').value, 10);
+    const tipoPeriodo = $('tipoPeriodo').value;
+    const meses = tipoPeriodo === 'anos' ? periodo * 12 : periodo;
+
+    if(inicial < 0 || aporte < 0) return {erro:'Valores não podem ser negativos.'};
+    if(inicial === 0 && aporte === 0) return {erro:'Informe um valor inicial ou um aporte mensal.'};
+    if(isNaN(taxa) || taxa < 0) return {erro:'Informe uma taxa de juros válida (zero ou maior).'};
+    if(isNaN(periodo) || periodo < 1) return {erro:'Informe um período de pelo menos 1.'};
+    if(meses > 1200) return {erro:'O período máximo é de 100 anos (1200 meses).'};
+    return {ok:true, inicial, aporte, taxa, periodo};
+  }
+
+  function calcular(){
+    const v = validar();
+    $('erro').textContent = v.erro || '';
+    if(!v.ok) return;
+
+    const {meses, linhas} = simular(v.inicial, v.aporte, v.taxa, $('tipoTaxa').value, v.periodo, $('tipoPeriodo').value);
+    const fim = linhas[linhas.length - 1];
+
+    $('rTotal').textContent = brl.format(fim.saldo);
+    $('rInvestido').textContent = brl.format(fim.investido);
+    $('rJuros').textContent = brl.format(fim.saldo - fim.investido);
+
+    // Agrupa por ano quando o prazo for maior que 24 meses
+    const porAno = meses > 24;
+    const pontos = porAno
+      ? linhas.filter(l => l.mes > 0 && (l.mes % 12 === 0 || l.mes === meses))
+      : linhas.filter(l => l.mes > 0);
+
+    ultimaSerie = [linhas[0], ...pontos];
+    montarTabela(pontos, linhas, porAno);
+    desenharGrafico();
+  }
+
+  function montarTabela(pontos, linhas, porAno){
+    $('thPeriodo').textContent = porAno ? 'Ano' : 'Mês';
+    $('tabelaInfo').textContent = porAno
+      ? 'Resumo por ano (o último pode ser parcial).'
+      : 'Evolução mês a mês.';
+
+    let anterior = linhas[0];
+    const html = pontos.map(p => {
+      const jurosPeriodo = (p.saldo - p.investido) - (anterior.saldo - anterior.investido);
+      const rotulo = porAno ? (p.mes % 12 === 0 ? (p.mes/12) : (p.mes/12).toFixed(1).replace('.',',')) : p.mes;
+      const linha = `<tr>
+        <td>${rotulo}</td>
+        <td>${brl.format(p.investido)}</td>
+        <td>${brl.format(jurosPeriodo)}</td>
+        <td>${brl.format(p.saldo - p.investido)}</td>
+        <td><strong>${brl.format(p.saldo)}</strong></td>
+      </tr>`;
+      anterior = p;
+      return linha;
+    }).join('');
+    $('tbody').innerHTML = html;
+  }
+
+  function cssVar(nome){ return getComputedStyle(document.documentElement).getPropertyValue(nome).trim(); }
+
+  function desenharGrafico(){
+    const canvas = $('grafico');
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+
+    const dados = ultimaSerie.slice(1);
+    if(!dados.length) return;
+
+    const padL = 56, padR = 8, padT = 10, padB = 24;
+    const cw = w - padL - padR, ch = h - padT - padB;
+    const max = Math.max(...dados.map(d => d.saldo)) * 1.05;
+
+    const cLinha = cssVar('--line'), cMuted = cssVar('--muted');
+    const cInv = cssVar('--invested'), cJur = cssVar('--interest');
+
+    // Linhas de grade e eixo Y
+    ctx.font = '11px system-ui, sans-serif';
+    ctx.fillStyle = cMuted; ctx.strokeStyle = cLinha; ctx.lineWidth = 1;
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for(let g = 0; g <= 4; g++){
+      const y = padT + ch - (ch * g / 4);
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(w - padR, y); ctx.stroke();
+      ctx.fillText(abreviar(max * g / 4), padL - 6, y);
+    }
+
+    // Barras empilhadas
+    const n = dados.length;
+    const slot = cw / n;
+    const bw = Math.max(2, Math.min(40, slot * 0.7));
+    dados.forEach((d, idx) => {
+      const x = padL + slot * idx + (slot - bw) / 2;
+      const hInv = ch * (d.investido / max);
+      const hJur = ch * ((d.saldo - d.investido) / max);
+      ctx.fillStyle = cInv;
+      ctx.fillRect(x, padT + ch - hInv, bw, hInv);
+      ctx.fillStyle = cJur;
+      ctx.fillRect(x, padT + ch - hInv - hJur, bw, hJur);
+    });
+
+    // Eixo X (alguns rótulos)
+    ctx.fillStyle = cMuted; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    const porAno = (ultimaSerie[ultimaSerie.length-1].mes) > 24;
+    const passo = Math.ceil(n / 8);
+    dados.forEach((d, idx) => {
+      if(idx % passo !== 0 && idx !== n - 1) return;
+      const x = padL + slot * idx + slot / 2;
+      const txt = porAno ? Math.round(d.mes / 12) + 'a' : d.mes + 'm';
+      ctx.fillText(txt, x, padT + ch + 6);
+    });
+  }
+
+  function abreviar(v){
+    if(v >= 1e9) return 'R$ ' + (v/1e9).toFixed(1).replace('.',',') + ' bi';
+    if(v >= 1e6) return 'R$ ' + (v/1e6).toFixed(1).replace('.',',') + ' mi';
+    if(v >= 1e3) return 'R$ ' + (v/1e3).toFixed(0) + ' mil';
+    return 'R$ ' + v.toFixed(0);
+  }
+
+  $('form').addEventListener('submit', e => { e.preventDefault(); calcular(); });
+  $('limpar').addEventListener('click', () => {
+    ['inicial','aporte','taxa','periodo'].forEach(id => $(id).value = '');
+    $('erro').textContent = '';
+    $('rTotal').textContent = $('rInvestido').textContent = $('rJuros').textContent = brl.format(0);
+    $('tbody').innerHTML = ''; $('tabelaInfo').textContent = '';
+    ultimaSerie = [];
+    const c = $('grafico'); c.getContext('2d').clearRect(0,0,c.width,c.height);
+  });
+
+  window.addEventListener('resize', () => { if(ultimaSerie.length) desenharGrafico(); });
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if(ultimaSerie.length) desenharGrafico(); });
+
+  calcular(); // resultado inicial já visível
+})();
+</script>
+</body>
+</html>
